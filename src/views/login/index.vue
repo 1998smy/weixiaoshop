@@ -54,9 +54,13 @@ export default {
           const res = await login(this.loginForm)
           console.log(res)
           if (res.meta.status !== 200) {
-            return console.log('登录失败')
+            return this.$message.error('登录失败')
           }
-          console.log('登录成功')
+          // Message组件 全局配置后，可通过 this.$message 直接使用
+          this.$message.success('登录成功')
+          window.sessionStorage.setItem('token', res.data.token)
+          // 保存 token后 跳转页面
+          this.$router.push('/home')
         }
       })
     },
