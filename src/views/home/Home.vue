@@ -74,7 +74,7 @@ export default {
     // 获取左侧菜单栏
     async getMenuList() {
       const { data: res } = await getMenus()
-      console.log(res)
+      // console.log(res)
       this.menusLists = res
     },
     // 点击按钮 折叠菜单事件

@@ -10,7 +10,7 @@ export function request(config) {
 
   // axios的拦截器(类似python的中间件的request)
   instance.interceptors.request.use(config => {
-    console.log(config);
+    // console.log(config);
     config.headers.Authorization = window.sessionStorage.getItem('token')
     // 多用于登录时的cookies判断
     return config

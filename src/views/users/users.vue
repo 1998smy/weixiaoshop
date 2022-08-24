@@ -10,12 +10,12 @@
     <el-form :inline="true" :model="queryInfo" class="demo-form-inline">
       <!-- 搜索框区域 -->
       <el-form-item>
-        <el-input v-model="queryInfo.query" class="input-with-select" placeholder="请输入搜索内容">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input v-model="queryInfo.query" class="input-with-select" clearable @clear="getUsersList" placeholder="请输入搜索内容">
+          <el-button slot="append" icon="el-icon-search" @click="searchInfo(queryInfo.query)"></el-button>
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="addUser">添加用户</el-button>
+        <el-button type="primary" @click="addUserFormVisible=true">添加用户</el-button>
       </el-form-item>
       <!-- 表格区域 -->
       <el-table :data="tableData" border style="width: 100%" class="user-table">
@@ -25,21 +25,24 @@
         </el-table-column>
         <el-table-column prop="email" label="邮箱">
         </el-table-column>
-        <el-table-column prop="create_time" label="电话">
+        <el-table-column prop="mobile" label="电话">
         </el-table-column>
         <el-table-column prop="role_name" label="角色">
         </el-table-column>
         <el-table-column prop="mg_state" label="状态">
           <!-- 作用域插槽 -->
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.mg_state" active-value="true" inactive-value="false">
+            <el-switch v-model="scope.row.mg_state" @change="stateChange(scope.row)" active-value="true" inactive-value="false">
             </el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="200">
           <template slot-scope="scope">
-            <el-button type="primary" @click="edit(scope.$index,scope.row)" icon="el-icon-edit" size="mini"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+            <!-- 修改用户信息 -->
+            <el-button type="primary" icon="el-icon-edit" size="mini" @click="editInfo(scope.row.id)"></el-button>
+            <!-- 删除用户信息 -->
+            <el-button type="danger" @click="deleteUser(scope.row.id)" icon="el-icon-delete" size="mini"></el-button>
+            <!-- 分配角色 -->
             <el-tooltip class="item" effect="dark" content="分配角色" placement="top" :enterable="false">
               <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
             </el-tooltip>
@@ -47,14 +50,53 @@
         </el-table-column>
       </el-table>
       <!-- 分页栏 -->
-      <el-pagination @size-change="handleSizeChange()" @current-change="handleCurrentChange()" :current-page="queryInfo.pagenum" :page-sizes="[1,2,5,10]" :page-size="queryInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalList" class="users-pag">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryInfo.pagenum" :page-sizes="[1,2,5,10]" :page-size="queryInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalList" class="users-pag">
       </el-pagination>
     </el-form>
+    <!-- 添加用户对话框  一定要放在 页面最下方-->
+    <el-dialog title="添加用户" :close="addUsersClosed" :visible.sync="addUserFormVisible" width="30%">
+      <el-form ref="addUserForm" :model="addUserForm" :rules="addRules" class="demo-ruleForm dialog-form" label-width="65px">
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="addUserForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="addUserForm.password"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="addUserForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="phone">
+          <el-input v-model="addUserForm.phone"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addUserFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 修改用户对话框 -->
+    <el-dialog title="修改用户" :close="editUsersClosed" :visible.sync="editUserVisible" width="30%">
+      <el-form ref="editUserForm" :model="editUserForm" :rules="editRules" class="demo-ruleForm dialog-form" label-width="65px">
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="editUserForm.username" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="editUserForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="phone">
+          <el-input v-model="editUserForm.phone"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editUserVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editUser">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUsersInfo } from '@/api/users/users.js'
+import { getUsersInfo, getUsersState, addUser, searchUserInfo, editUserInfo, deleteUser } from '@/api/users/users.js'
 export default {
   name: 'Users',
   data() {
@@ -70,7 +112,54 @@ export default {
       // 表格数据
       tableData: [],
       // 数据总条数
-      totalList: 0
+      totalList: 0,
+      // 新增按钮 是否展示对话框
+      addUserFormVisible: false,
+      // 新增用户信息 表单数据
+      addUserForm: {
+        username: '',
+        password: '',
+        email: '',
+        phone: ''
+      },
+      // 新增用户信息 验证规则
+      addRules: {
+        username: [
+          { required: true, message: '用户名不能为空', trigger: 'blur' },
+          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '密码不能为空', trigger: 'blur' },
+          { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '邮箱不能为空', trigger: 'blur' },
+          { type: 'email', message: '请输入合法的邮箱地址', trigger: ['blur', 'change'] }
+        ],
+        phone: [
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          { pattern: /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/, message: '请输入合法的手机号', trigger: 'change' }
+        ]
+      },
+      // 修改用户是否展示对话框
+      editUserVisible: false,
+      // 修改用户 数据
+      editUserForm: {
+        username: '',
+        email: '',
+        phone: '',
+        id: 0
+      },
+      editRules: {
+        email: [
+          { required: true, message: '邮箱不能为空', trigger: 'blur' },
+          { type: 'email', message: '请输入合法的邮箱地址', trigger: ['blur', 'change'] }
+        ],
+        phone: [
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          { pattern: /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/, message: '请输入合法的手机号', trigger: 'change' }
+        ]
+      }
     }
   },
   created() {
@@ -81,18 +170,104 @@ export default {
     async getUsersList() {
       const { data: res } = await getUsersInfo(this.queryInfo.query, this.queryInfo.pagenum, this.queryInfo.pagesize)
       this.tableData = res.users
-      console.log(this.tableData)
-      console.log(res)
+      // console.log(this.tableData)
+      // console.log(res)
       this.totalList = res.total
     },
-    // 新增新用户
-    addUser() {},
-    //
-    handleSizeChange() {
-      console.log('每页条数')
+    // 搜索框 搜索事件
+    async searchInfo(query) {
+      const { data: res } = await getUsersInfo(query, this.queryInfo.pagenum, this.queryInfo.pagesize)
+      this.tableData = res.users
+      this.totalList = res.total
     },
-    handleCurrentChange() {
-      console.log('当前页:')
+    // 对话框的关闭事件
+    addUsersClosed() {
+      // 重置表单
+      this.$refs.addUserForm.resetFields()
+    },
+    // 添加用户 确定事件
+    addUser() {
+      this.$refs.addUserForm.validate(async vaild => {
+        if (!vaild) return
+        // 发起 添加用户请求
+        const res = await addUser(this.addUserForm)
+        if (res.meta.status !== 200) {
+          this.$message.error('添加用户失败')
+        }
+        this.addUserFormVisible = false
+        // 重新调用 获取用户列表数据
+        this.getUsersList()
+      })
+    },
+    // 监听 状态改变事件
+    async stateChange(userinfo) {
+      const res = await getUsersState(userinfo.id, userinfo.mg_state)
+      console.log(res)
+      if (res.meta.status !== 200) {
+        this.$message.error('用户状态修改失败')
+      }
+
+      this.getUsersList()
+    },
+    // 修改用户事件(根据id查询数据)
+    async editInfo(id) {
+      this.editUserVisible = true
+
+      // 根据id 查询用户信息
+      const res = await searchUserInfo(id)
+      if (res.meta.status !== 200) {
+        this.$message.error('查询用户失败')
+      }
+      console.log(res)
+      this.editUserForm.username = res.data.username
+      this.editUserForm.email = res.data.email
+      this.editUserForm.phone = res.data.mobile
+      this.editUserForm.id = res.data.id
+    },
+    editUsersClosed() {
+      this.$refs.editUserForm.resetFields()
+    },
+    // 确定 修改用户
+    editUser() {
+      this.$refs.editUserForm.validate(async vaild => {
+        if (!vaild) return
+        // 发起 修改用户请求
+        const res = await editUserInfo(this.editUserForm.id, this.editUserForm.email, this.editUserForm.phone)
+        if (res.meta.status !== 200) {
+          this.$message.error('添加用户失败')
+        }
+        this.editUserVisible = false
+        this.getUsersList()
+      })
+    },
+    // 删除用户
+    async deleteUser(id) {
+      const confirmRes = await this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(err => err)
+      if (confirmRes !== 'confirm') {
+        return this.$message.info('已取消删除')
+      }
+      const deleteRes = await deleteUser(id)
+      if (deleteRes.meta.status !== 200) {
+        this.$message.error('删除用户失败')
+      }
+      this.$message.success('删除用户成功')
+      this.getUsersList()
+    },
+    // 监听 pagesize 改变的事件
+    handleSizeChange(newSize) {
+      // 重新请求数据
+      this.queryInfo.pagesize = newSize
+      this.getUsersList()
+    },
+    // 监听 pagenum 改变的事件
+    handleCurrentChange(newPage) {
+      // 重新请求数据
+      this.queryInfo.pagenum = newPage
+      this.getUsersList()
     }
   }
 }
@@ -115,6 +290,11 @@ export default {
     }
     .users-pag {
       text-align: center;
+    }
+  }
+  .dialog-form {
+    .el-form-item__content {
+      margin-left: 0;
     }
   }
 }
