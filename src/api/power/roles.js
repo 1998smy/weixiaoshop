@@ -26,3 +26,29 @@ export function conRolesRights(roleId, rids) {
     }
   })
 }
+
+// 添加角色请求
+export function addRole(data) {
+  return request({
+    url: 'roles',
+    method: 'post',
+    data
+  })
+}
+
+// 编辑提交角色
+export function editRole(id, data) {
+  return request({
+    url: 'roles/' + id,
+    method: 'put',
+    data
+  })
+}
+
+// 删除角色
+export function deleteRole(id) {
+  return request({
+    url: 'roles/' + id,
+    method: 'delete',
+  })
+}
