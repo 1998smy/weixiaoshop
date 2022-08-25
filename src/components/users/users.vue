@@ -7,52 +7,54 @@
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 表单区域 -->
-    <el-form :inline="true" :model="queryInfo" class="demo-form-inline">
-      <!-- 搜索框区域 -->
-      <el-form-item>
-        <el-input v-model="queryInfo.query" class="input-with-select" clearable @clear="getUsersList" placeholder="请输入搜索内容">
-          <el-button slot="append" icon="el-icon-search" @click="searchInfo(queryInfo.query)"></el-button>
-        </el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="addUserFormVisible=true">添加用户</el-button>
-      </el-form-item>
-      <!-- 表格区域 -->
-      <el-table :data="tableData" border style="width: 100%" class="user-table">
-        <el-table-column type="index" label="#" width="50">
-        </el-table-column>
-        <el-table-column prop="username" label="姓名">
-        </el-table-column>
-        <el-table-column prop="email" label="邮箱">
-        </el-table-column>
-        <el-table-column prop="mobile" label="电话">
-        </el-table-column>
-        <el-table-column prop="role_name" label="角色">
-        </el-table-column>
-        <el-table-column prop="mg_state" label="状态">
-          <!-- 作用域插槽 -->
-          <template slot-scope="scope">
-            <el-switch v-model="scope.row.mg_state" @change="stateChange(scope.row)" active-value="true" inactive-value="false">
-            </el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="200">
-          <template slot-scope="scope">
-            <!-- 修改用户信息 -->
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="editInfo(scope.row.id)"></el-button>
-            <!-- 删除用户信息 -->
-            <el-button type="danger" @click="deleteUser(scope.row.id)" icon="el-icon-delete" size="mini"></el-button>
-            <!-- 分配角色 -->
-            <el-tooltip class="item" effect="dark" content="分配角色" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
-            </el-tooltip>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!-- 分页栏 -->
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryInfo.pagenum" :page-sizes="[1,2,5,10]" :page-size="queryInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalList" class="users-pag">
-      </el-pagination>
-    </el-form>
+    <el-card class="box-card">
+      <el-form :inline="true" :model="queryInfo" class="demo-form-inline">
+        <!-- 搜索框区域 -->
+        <el-form-item>
+          <el-input v-model="queryInfo.query" class="input-with-select" clearable @clear="getUsersList" placeholder="请输入搜索内容">
+            <el-button slot="append" icon="el-icon-search" @click="searchInfo(queryInfo.query)"></el-button>
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="addUserFormVisible=true">添加用户</el-button>
+        </el-form-item>
+        <!-- 表格区域 -->
+        <el-table :data="tableData" border style="width: 100%" class="user-table">
+          <el-table-column type="index" label="#" width="50">
+          </el-table-column>
+          <el-table-column prop="username" label="姓名">
+          </el-table-column>
+          <el-table-column prop="email" label="邮箱">
+          </el-table-column>
+          <el-table-column prop="mobile" label="电话">
+          </el-table-column>
+          <el-table-column prop="role_name" label="角色">
+          </el-table-column>
+          <el-table-column prop="mg_state" label="状态">
+            <!-- 作用域插槽 -->
+            <template slot-scope="scope">
+              <el-switch v-model="scope.row.mg_state" @change="stateChange(scope.row)" active-value="true" inactive-value="false">
+              </el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="300">
+            <template slot-scope="scope">
+              <!-- 修改用户信息 -->
+              <el-button type="primary" icon="el-icon-edit" size="mini" @click="editInfo(scope.row.id)"></el-button>
+              <!-- 删除用户信息 -->
+              <el-button type="danger" @click="deleteUser(scope.row.id)" icon="el-icon-delete" size="mini"></el-button>
+              <!-- 分配角色 -->
+              <el-tooltip class="item" effect="dark" content="分配角色" placement="top" :enterable="false">
+                <el-button type="warning" @click="setRole(scope.row)" icon="el-icon-setting" size="mini"></el-button>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- 分页栏 -->
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryInfo.pagenum" :page-sizes="[1,2,5,10]" :page-size="queryInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalList" class="users-pag">
+        </el-pagination>
+      </el-form>
+    </el-card>
     <!-- 添加用户对话框  一定要放在 页面最下方-->
     <el-dialog title="添加用户" :close="addUsersClosed" :visible.sync="addUserFormVisible" width="30%">
       <el-form ref="addUserForm" :model="addUserForm" :rules="addRules" class="demo-ruleForm dialog-form" label-width="65px">
@@ -92,11 +94,30 @@
         <el-button type="primary" @click="editUser">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 分配角色对话框 -->
+    <el-dialog title="分配角色" @closed="clearSetRole" :visible.sync="setRoleVisible" width="30%">
+      <div>
+        <p>当前的用户：{{ userInfo.username }}</p>
+        <p>当前的角色：{{ userInfo.role_name }}</p>
+        <p>
+          分配新角色：
+          <el-select v-model="selectedRoleId" placeholder="请选择角色">
+            <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.id">
+            </el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setRoleVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveSetRoleId">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUsersInfo, getUsersState, addUser, searchUserInfo, editUserInfo, deleteUser } from '@/api/users/users.js'
+import { getUsersInfo, getUsersState, addUser, searchUserInfo, editUserInfo, deleteUser, setUserRole } from '@/api/users/users.js'
+import { getRolesList } from '@/api/power/roles.js'
 export default {
   name: 'Users',
   data() {
@@ -159,7 +180,15 @@ export default {
           { required: true, message: '手机号不能为空', trigger: 'blur' },
           { pattern: /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/, message: '请输入合法的手机号', trigger: 'change' }
         ]
-      }
+      },
+      // 分配角色 是否展示对话框
+      setRoleVisible: false,
+      // 要分配角色的信息
+      userInfo: {},
+      // 所有角色列表数据
+      roleList: [],
+      // 被选中的角色ID
+      selectedRoleId: ''
     }
   },
   created() {
@@ -180,7 +209,7 @@ export default {
       this.tableData = res.users
       this.totalList = res.total
     },
-    // 对话框的关闭事件
+    // 添加用户的表单重置事件
     addUsersClosed() {
       // 重置表单
       this.$refs.addUserForm.resetFields()
@@ -224,6 +253,7 @@ export default {
       this.editUserForm.phone = res.data.mobile
       this.editUserForm.id = res.data.id
     },
+    // 编辑用户的表单重置事件
     editUsersClosed() {
       this.$refs.editUserForm.resetFields()
     },
@@ -257,6 +287,36 @@ export default {
       this.$message.success('删除用户成功')
       this.getUsersList()
     },
+    // 分配角色
+    async setRole(userInfo) {
+      this.userInfo = userInfo
+      this.setRoleVisible = true
+
+      // 获取所有角色数据
+      const roleRes = await getRolesList()
+      this.roleList = roleRes.data
+    },
+    // 点击 确定按钮，分配角色
+    async saveSetRoleId() {
+      if (!this.selectedRoleId) {
+        this.$message.error('请选择要分配的角色')
+      }
+      // 发起 分配角色请求
+      const res = await setUserRole(this.userInfo.id, this.selectedRoleId)
+      console.log(res)
+      if (res.meta.status !== 200) {
+        this.$message.error('设置角色失败')
+      }
+      this.setRoleVisible = false
+      // 重新获取列表
+      this.getUsersList()
+    },
+    // 监听 分配角色对话框关闭事件
+    clearSetRole() {
+      // 清除 角色ID 和 角色信息
+      this.selectedRoleId = ''
+      this.userInfo = {}
+    },
     // 监听 pagesize 改变的事件
     handleSizeChange(newSize) {
       // 重新请求数据
@@ -279,22 +339,20 @@ export default {
   width: 100%;
   height: 100%;
 
-  .demo-form-inline {
+  .box-card {
     margin-top: 15px;
-    padding: 15px;
-    background-color: #fff;
-    box-shadow: 2px 2px 5px #ccc;
-
-    .user-table {
-      margin-bottom: 15px;
+    .demo-form-inline {
+      .user-table {
+        margin-bottom: 15px;
+      }
+      .users-pag {
+        text-align: center;
+      }
     }
-    .users-pag {
-      text-align: center;
-    }
-  }
-  .dialog-form {
-    .el-form-item__content {
-      margin-left: 0;
+    .dialog-form {
+      .el-form-item__content {
+        margin-left: 0;
+      }
     }
   }
 }

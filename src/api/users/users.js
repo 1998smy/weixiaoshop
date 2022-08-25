@@ -50,10 +50,22 @@ export function editUserInfo(id, email, mobile) {
   })
 }
 
+// 删除单个用户
 export function deleteUser(id) {
   return request({
     url: 'users/' + id,
     method: 'delete'
+  })
+}
+
+// 分配用户角色
+export function setUserRole(id, rid) {
+  return request({
+    url: 'users/' + id + '/role',
+    method: 'put',
+    data: {
+      rid
+    }
   })
 }
 

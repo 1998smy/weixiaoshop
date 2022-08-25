@@ -13,7 +13,7 @@
           <el-button type="info" size="mini" round @click="loginOut">退出</el-button>
         </div>
       </el-header>
-      <el-container>
+      <el-container class="main-container">
         <!-- 左侧菜单栏 -->
         <el-aside :width="isCollapse ? '64px': '200px'">
           <!-- 折叠菜单按钮 -->
@@ -35,7 +35,7 @@
           </el-menu>
         </el-aside>
         <!-- 右侧主体栏 -->
-        <el-main style="background-color: #E9EEF3;">
+        <el-main style="background-color: #E9EEF3;height:100vh;">
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -128,6 +128,7 @@ export default {
         }
       }
     }
+
     .toggle-button {
       height: 24px;
       background-color: #4a5064;

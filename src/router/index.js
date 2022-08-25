@@ -4,11 +4,12 @@ import VueRouter from 'vue-router'
 // 导入路由组件
 import Login from '@/views/login/index.vue'
 import Home from '@/views/home/Home.vue'
-import Users from '@/views/users/users.vue'
-import Rights from '@/views/rights/rights.vue'
-import Reports from '@/views/reports/reports.vue'
-import Orders from '@/views/orders/orders.vue'
-import Goods from '@/views/goods/goods.vue'
+import Users from '@/components/users/users.vue'
+import Rights from '@/components/power/rights.vue'
+import Roles from '@/components/power/roles.vue'
+import Reports from '@/components/reports/reports.vue'
+import Orders from '@/components/orders/orders.vue'
+import Goods from '@/components/goods/goods.vue'
 
 Vue.use(VueRouter)
 
@@ -19,6 +20,7 @@ const routes = [
     path: '/home', component: Home, redirect: '/home/users',
     children: [
       { path: 'users', component: Users },
+      { path: 'roles', component: Roles },
       { path: 'rights', component: Rights },
       { path: 'reports', component: Reports },
       { path: 'orders', component: Orders },
