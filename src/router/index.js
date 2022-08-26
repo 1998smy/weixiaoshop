@@ -9,7 +9,7 @@ import Rights from '@/components/power/rights.vue'
 import Roles from '@/components/power/roles.vue'
 import Reports from '@/components/reports/reports.vue'
 import Orders from '@/components/orders/orders.vue'
-import Goods from '@/components/goods/goods.vue'
+import GoodsCate from '@/components/goods/goods_cate.vue'
 
 Vue.use(VueRouter)
 
@@ -24,7 +24,7 @@ const routes = [
       { path: 'rights', component: Rights },
       { path: 'reports', component: Reports },
       { path: 'orders', component: Orders },
-      { path: 'goods', component: Goods }
+      { path: 'categories', component: GoodsCate }
     ]
 
 

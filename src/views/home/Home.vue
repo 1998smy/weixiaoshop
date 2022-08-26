@@ -35,7 +35,7 @@
           </el-menu>
         </el-aside>
         <!-- 右侧主体栏 -->
-        <el-main style="background-color: #E9EEF3;height:100vh;">
+        <el-main style="background-color: #E9EEF3;">
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -87,7 +87,7 @@ export default {
 
 <style lang="less" scoped>
 .home {
-  height: 100%;
+  height: 100vh;
   background-color: rgb(55, 61, 63);
 
   .home-container {
@@ -126,6 +126,12 @@ export default {
           margin-right: 15px;
           color: #fff;
         }
+      }
+    }
+    .main-container {
+      max-height: 100%;
+      .el-main {
+        height: calc(100% - 0px);
       }
     }
 

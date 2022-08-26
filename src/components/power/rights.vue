@@ -7,7 +7,7 @@
       <el-breadcrumb-item>权限列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 卡片区域 -->
-    <el-card class="box-card">
+    <el-card class="box-card content-card">
       <!-- 表格区域 -->
       <el-table :data="rightsData" stripe border class="rightsTable">
         <el-table-column type="index" label="#" width="120px">
@@ -57,11 +57,15 @@ export default {
 <style lang="less" scoped>
 .rights {
   padding: 10px;
-
+  height: 100%;
+  box-sizing: border-box;
+  height: calc(100vh - 120px);
   .box-card {
+    height: 100%;
     margin-top: 15px;
     padding: 10px;
-    overflow: auto;
+    padding-right: 0;
+    // overflow-y: scroll;
   }
 }
 </style>

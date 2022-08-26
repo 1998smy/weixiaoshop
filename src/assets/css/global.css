@@ -26,3 +26,9 @@ body,
 .ql-editor {
   min-height: 500px;
 }
+
+.content-card .el-card__body {
+  height: calc(100vh - 140px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
