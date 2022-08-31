@@ -9,14 +9,5 @@ export function addGoods(data) {
   })
 }
 
-// 参数列表
-export function getCateAttributes(id, selname) {
-  return request({
-    url: 'categories/' + id + '/attributes',
-    method: 'get',
-    params: {
-      sel: selname
-    }
-  })
-}
+
 

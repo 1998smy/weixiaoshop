@@ -76,7 +76,8 @@
 
 <script>
 import { getGoodsCate } from '@/api/goods/cate.js'
-import { getCateAttributes, addGoods } from '@/api/goods/add.js'
+import { addGoods } from '@/api/goods/add.js'
+import { getCateAttributes } from '@/api/goods/params.js'
 import _ from 'lodash'
 export default {
   name: 'Goods_add',
