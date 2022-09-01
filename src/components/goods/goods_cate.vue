@@ -69,6 +69,7 @@
 
 <script>
 import { getGoodsCate, addGoodsCate, editGoodsCate, deleteGoodsCate } from '@/api/goods/cate.js'
+// import * as api from '@/api/goods/cate.js'
 import App from '@/App.vue'
 export default {
   name: 'Goods_cate',
