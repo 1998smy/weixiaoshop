@@ -1,6 +1,6 @@
 import Vue from 'vue'
 // 按需引入 element-ui
-import { Form, FormItem, Input, Button, Message, Container, Header, Aside, Main, Menu, Submenu, MenuItem, Breadcrumb, BreadcrumbItem, Card, Table, TableColumn, Tooltip, Switch, Pagination, Dialog, MessageBox, Tag, Row, Col, Tree, Select, Option, Cascader, Alert, Steps, Step, Tabs, TabPane, CheckboxGroup, Checkbox, Upload } from 'element-ui'
+import { Form, FormItem, Input, Button, Message, Container, Header, Aside, Main, Menu, Submenu, MenuItem, Breadcrumb, BreadcrumbItem, Card, Table, TableColumn, Tooltip, Switch, Pagination, Dialog, MessageBox, Tag, Row, Col, Tree, Select, Option, Cascader, Alert, Steps, Step, Tabs, TabPane, CheckboxGroup, Checkbox, Upload, Timeline, TimelineItem } from 'element-ui'
 Vue.prototype.$ELEMENT = { size: 'small', zIndex: 3000 }
 Vue.use(Form)
 Vue.use(FormItem)
@@ -37,6 +37,8 @@ Vue.use(TabPane)
 Vue.use(CheckboxGroup)
 Vue.use(Checkbox)
 Vue.use(Upload)
+Vue.use(Timeline)
+Vue.use(TimelineItem)
 Vue.prototype.$message = Message // 全局配置
 Vue.prototype.$confirm = MessageBox // 全局配置
 
