@@ -9,7 +9,7 @@
         </div>
         <div class="home-right">
           <img src="../../assets/manager.jpg" alt="">
-          <span>admin,您好</span>
+          <span>{{ username }}，您好</span>
           <el-button type="info" size="mini" round @click="loginOut">退出</el-button>
         </div>
       </el-header>
@@ -19,7 +19,7 @@
           <!-- 折叠菜单按钮 -->
           <div class="toggle-button" @click="foldChange"> | | |</div>
           <!-- 导航菜单 -->
-          <el-menu class="el-menu-vertical-demo" default-active="/home/users" :collapse="isCollapse" router unique-opened :collapse-transition="false" background-color="#323743" text-color="#fff" active-text-color="#409EFF">
+          <el-menu class="el-menu-vertical-demo" :default-active="defaultAct" :collapse="isCollapse" router unique-opened :collapse-transition="false" @select="acticeMenu" background-color="#323743" text-color="#fff" active-text-color="#409EFF">
             <el-submenu :index="item.id + ''" v-for="item in menusLists" :key="item.id">
               <template slot="title">
                 <i :class="iconsObj[item.id]"></i>
@@ -49,6 +49,7 @@ export default {
   name: 'Home',
   data() {
     return {
+      username: '',
       // 左侧菜单数据列表
       menusLists: [],
       iconsObj: {
@@ -58,28 +59,41 @@ export default {
         102: 'iconfont icon-danju',
         145: 'iconfont icon-baobiao'
       },
+      // 当前激活菜单的 index
+      defaultAct: '',
+      // 是否折叠侧边栏
       isCollapse: false
     }
   },
   created() {
     this.getMenuList()
+    this.username = window.sessionStorage.getItem('username')
+    if (window.location.href.split('#')[1] == ('/home/goods/add' || '/home/goods/edit')) {
+      this.defaultAct = '/home/goods'
+    } else {
+      this.defaultAct = window.location.href.split('#')[1]
+    }
   },
   methods: {
     // 退出事件
     loginOut() {
       window.sessionStorage.removeItem('token')
+      window.sessionStorage.removeItem('username')
       this.$router.push('/login')
       this.$message.success('退出成功')
     },
     // 获取左侧菜单栏
     async getMenuList() {
       const { data: res } = await getMenus()
-      // console.log(res)
       this.menusLists = res
     },
     // 点击按钮 折叠菜单事件
     foldChange() {
       this.isCollapse = !this.isCollapse
+    },
+    // 菜单激活事件
+    acticeMenu(index, indexPath) {
+      this.defaultAct = index
     }
   }
 }
@@ -130,7 +144,8 @@ export default {
     }
     .main-container {
       max-height: 100%;
-      .el-main {
+      height: calc(100% - 60px);
+      .el-aside {
         height: calc(100% - 0px);
       }
     }

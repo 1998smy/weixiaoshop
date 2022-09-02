@@ -7,13 +7,13 @@
       <el-breadcrumb-item>角色列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 卡片区域 -->
-    <el-card class="box-card">
+    <el-card class="content-card">
       <!-- 添加角色 -->
       <el-button type="primary" @click="addRoleDigVisible = true">添加角色</el-button>
       <!-- 表格区域 -->
-      <el-table :data="rolesData" stripe style="width: 100%" border class="roles-table">
+      <el-table :data="rolesData" stripe style="width: 100%" border>
+        <!-- 展开行 -->
         <el-table-column type="expand">
-          <!-- 展开行 -->
           <template slot-scope="scope">
             <!-- 一级 -->
             <el-row v-for="(item,i) in scope.row.children" :key="item.id" :class="['bdbottom','vcenter', i === 0 ? 'bdtop' :'']">
@@ -171,7 +171,6 @@ export default {
     async cofEditInfo() {
       // 发起编辑请求
       const res = await editRole(this.editRoleId, this.editRoleForm)
-      console.log(res)
       if (res.meta.status !== 200) {
         this.$message.error('修改角色失败')
       }
@@ -190,7 +189,6 @@ export default {
       }
       // 发起 删除请求
       const res = await deleteRole(id)
-      console.log(res)
       if (res.meta.status !== 200) {
         this.$message.error('删除角色失败')
       }
@@ -208,7 +206,6 @@ export default {
       }
       // 请求删除指定权限
       const res = await deleteRoleRight(role.id, rightId)
-      console.log(res)
       if (res.meta.status !== 200) {
         this.$message.srror('权限取消失败')
       }
@@ -270,23 +267,14 @@ export default {
   height: 100%;
   width: 100%;
 
-  .box-card {
-    margin-top: 15px;
-    padding: 10px;
-
-    .roles-table {
-      margin-top: 20px;
-
-      .rolesTag {
-        margin: 7px;
-      }
-      .bdbottom {
-        border-bottom: 1px solid #eee;
-      }
-      .bdtop {
-        border-top: 1px solid #eee;
-      }
-    }
+  .rolesTag {
+    margin: 7px;
+  }
+  .bdbottom {
+    border-bottom: 1px solid #eee;
+  }
+  .bdtop {
+    border-top: 1px solid #eee;
   }
 }
 </style>

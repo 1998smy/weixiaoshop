@@ -22,32 +22,49 @@ export default {
   name: 'Reports',
   data() {
     return {
+      // 图表数据
       options: {
+        // 标题
         title: {
-          text: '用户来源'
+          text: '用户来源',
+          left: '40%'
         },
+        // 图例
+        legend: {
+          right: '4%'
+        },
+        // 提示框
         tooltip: {
+          // 坐标轴触发
           trigger: 'axis',
+          // 坐标轴指示器配置项
           axisPointer: {
+            // 十字准星指示器
             type: 'cross',
             label: {
               backgroundColor: '#E9EEF3'
             }
           }
         },
+        // 直角坐标系内绘图网格
         grid: {
+          // 离容器左侧的距离
           left: '3%',
           right: '4%',
           bottom: '3%',
           containLabel: true
         },
+        // X轴数据
         xAxis: [
           {
+            // 坐标轴两边留白策略
             boundaryGap: false
           }
         ],
+        // Y轴数据
         yAxis: [
           {
+            // 坐标轴类型  数值轴
             type: 'value'
           }
         ]
@@ -61,12 +78,12 @@ export default {
 
     // 获取报表数据
     const res = await getEchartsData()
-    console.log(res)
     if (res.meta.status !== 200) {
       this.$message.error('图表数据获取失败')
     }
 
     // 准备图表的配置项和数据
+    // 使用 merge 将 两组数据合并
     const result = _.merge(res.data, this.options)
 
     // 使用刚指定的配置项和数据显示图表。
@@ -77,6 +94,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.reports {
-}
 </style>

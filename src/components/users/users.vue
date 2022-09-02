@@ -30,10 +30,10 @@
           </el-table-column>
           <el-table-column prop="role_name" label="角色">
           </el-table-column>
-          <el-table-column prop="mg_state" label="状态">
+          <el-table-column label="状态">
             <!-- 作用域插槽 -->
             <template slot-scope="scope">
-              <el-switch v-model="scope.row.mg_state" @change="stateChange(scope.row)" active-value="true" inactive-value="false">
+              <el-switch v-model="scope.row.mg_state" @change="stateChange(scope.row)">
               </el-switch>
             </template>
           </el-table-column>
@@ -199,8 +199,6 @@ export default {
     async getUsersList() {
       const { data: res } = await getUsersInfo(this.queryInfo.query, this.queryInfo.pagenum, this.queryInfo.pagesize)
       this.tableData = res.users
-      // console.log(this.tableData)
-      // console.log(res)
       this.totalList = res.total
     },
     // 搜索框 搜索事件
@@ -231,10 +229,10 @@ export default {
     // 监听 状态改变事件
     async stateChange(userinfo) {
       const res = await getUsersState(userinfo.id, userinfo.mg_state)
-      console.log(res)
       if (res.meta.status !== 200) {
         this.$message.error('用户状态修改失败')
       }
+      this.$message.success('用户状态修改成功')
 
       this.getUsersList()
     },
@@ -247,7 +245,6 @@ export default {
       if (res.meta.status !== 200) {
         this.$message.error('查询用户失败')
       }
-      console.log(res)
       this.editUserForm.username = res.data.username
       this.editUserForm.email = res.data.email
       this.editUserForm.phone = res.data.mobile
@@ -303,7 +300,6 @@ export default {
       }
       // 发起 分配角色请求
       const res = await setUserRole(this.userInfo.id, this.selectedRoleId)
-      console.log(res)
       if (res.meta.status !== 200) {
         this.$message.error('设置角色失败')
       }

@@ -6,7 +6,7 @@
       <el-breadcrumb-item>商品管理</el-breadcrumb-item>
       <el-breadcrumb-item>商品参数</el-breadcrumb-item>
     </el-breadcrumb>
-    <!-- 卡片吗区域 -->
+    <!-- 卡片区域 -->
     <el-card>
       <!-- 警告框 -->
       <el-alert title="注意：只允许为第三级分类设置相关参数！" :closable="false" type="warning" show-icon>
@@ -273,6 +273,14 @@ export default {
     },
     // 删除参数
     async deleteparams(attrId) {
+      const deleteRes = await this.$confirm('此操作将永久删除该参数, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(err => err)
+      if (deleteRes !== 'confirm') {
+        return this.$message.info('取消了删除')
+      }
       const res = await deleteParams(this.cateId, attrId)
       if (res.meta.status !== 200) {
         this.$message.error('删除参数失败')

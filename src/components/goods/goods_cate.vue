@@ -69,8 +69,6 @@
 
 <script>
 import { getGoodsCate, addGoodsCate, editGoodsCate, deleteGoodsCate } from '@/api/goods/cate.js'
-// import * as api from '@/api/goods/cate.js'
-import App from '@/App.vue'
 export default {
   name: 'Goods_cate',
   data() {
@@ -170,7 +168,6 @@ export default {
         this.$message.error('获取父级分类列表失败')
       }
       this.parentCateList = res.data
-      console.log(this.parentCateList)
     },
     // 取消按钮 重置事件
     cancelCate() {
@@ -204,7 +201,6 @@ export default {
     },
     // 编辑分类
     async editCate(data) {
-      console.log(data)
       this.editCateDigVisible = true
       this.editCateForm.cat_name = data.cat_name
       this.editCateForm.cat_id = data.cat_id
@@ -237,7 +233,6 @@ export default {
       }
       // 发起删除分类请求
       const res = await deleteGoodsCate(data.cat_id)
-      console.log(res)
       if (res.meta.status !== 200) {
         this.$message.error('删除分类失败')
       }
@@ -253,8 +248,7 @@ export default {
       this.queryInfo.pagenum = newpagenum
       this.getAllCateList()
     }
-  },
-  components: { App }
+  }
 }
 </script>
 

@@ -30,10 +30,12 @@ export default {
   name: 'Login',
   data() {
     return {
+      // 登录表单数据
       loginForm: {
         username: '',
         password: ''
       },
+      // 登录表单验证规则
       loginRules: {
         name: [
           { required: true, message: '用户名不能为空', trigger: 'blur' },
@@ -52,13 +54,15 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           const res = await login(this.loginForm)
-          console.log(res)
           if (res.meta.status !== 200) {
             return this.$message.error('登录失败')
           }
+
           // Message组件 全局配置后，可通过 this.$message 直接使用
           this.$message.success('登录成功')
           window.sessionStorage.setItem('token', res.data.token)
+          window.sessionStorage.setItem('username', res.data.username)
+
           // 保存 token后 跳转页面
           this.$router.push('/home')
         }

@@ -45,47 +45,11 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryInfo.pagenum" :page-sizes="[5,10,15,20]" :page-size="queryInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total" background>
       </el-pagination>
     </el-card>
-    <!-- 编辑商品 对话框 -->
-    <el-dialog title="添加商品" :visible.sync="editGoodsDigVisible" width="50%">
-      <el-form ref="editGoodsForm" :rules="editGoodsRules" :model="editGoodsForm" label-width="110px">
-        <el-form-item label="商品ID" prop="goods_id">
-          <el-input v-model="editGoodsForm.goods_id" :disabled="true"></el-input>
-        </el-form-item>
-        <el-form-item label="商品名称" prop="goods_name">
-          <el-input v-model="editGoodsForm.goods_name" type="textarea"></el-input>
-        </el-form-item>
-        <el-form-item label="商品价格(元)" prop="goods_price">
-          <el-input v-model="editGoodsForm.goods_price"></el-input>
-        </el-form-item>
-        <el-form-item label="商品数量" prop="goods_number">
-          <el-input v-model="editGoodsForm.goods_number"></el-input>
-        </el-form-item>
-        <el-form-item label="商品重量" prop="goods_weight">
-          <el-input v-model="editGoodsForm.goods_weight"></el-input>
-        </el-form-item>
-        <el-form-item label="商品介绍" prop="goods_introduce">
-          <el-input v-model="editGoodsForm.goods_introduce"></el-input>
-        </el-form-item>
-        <el-form-item label="商品图片" prop="pics">
-          <!-- <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload> -->
-        </el-form-item>
-        <el-form-item label="商品参数" prop="attrs">
-          <el-input v-model="editGoodsForm.attrs"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="editGoodsDigVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confEditGoods">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getGoodsList, getGoodsById, deleteGoods } from '@/api/goods/list.js'
+import { getGoodsList, deleteGoods } from '@/api/goods/list.js'
 export default {
   name: 'Goods_list',
   data() {
@@ -98,24 +62,7 @@ export default {
       },
       total: 0,
       // 商品表格数据
-      goodsDataList: [],
-      editGoodsDigVisible: false,
-      editGoodsForm: {
-        goods_id: 0,
-        goods_name: '',
-        goods_price: 0,
-        goods_number: 0,
-        goods_weight: 0,
-        goods_introduce: '',
-        pics: '',
-        attrs: ''
-      },
-      editGoodsRules: {
-        goods_name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }],
-        goods_price: [{ required: true, message: '商品价格不能为空', trigger: 'blur' }],
-        goods_number: [{ required: true, message: '商品数量不能为空', trigger: 'blur' }],
-        goods_weight: [{ required: true, message: '商品重量不能为空', trigger: 'blur' }]
-      }
+      goodsDataList: []
     }
   },
   created() {
@@ -134,18 +81,8 @@ export default {
     },
     // 编辑商品
     async editGoods(data) {
-      const res = await getGoodsById(data.goods_id)
-      this.editGoodsForm.goods_id = res.data.goods_id
-      this.editGoodsForm.goods_name = res.data.goods_name
-      this.editGoodsForm.goods_number = res.data.goods_number
-      this.editGoodsForm.goods_price = res.data.goods_price
-      this.editGoodsForm.goods_weight = res.data.goods_weight
-      this.editGoodsForm.goods_weight = res.data.goods_weight
-      // this.editGoodsForm.goods_introduce = res.data.goods_introduce
-      // this.editGoodsForm.attrs = res.data.attrs
-      // this.editGoodsForm.pics = res.data.pics
-
-      this.editGoodsDigVisible = true
+      this.$router.push('/home/goods/edit')
+      window.sessionStorage.setItem('goodsId', data.goods_id)
     },
     // 编辑商品 确定按钮点击事件
     confEditGoods() {},
@@ -160,7 +97,6 @@ export default {
         return this.$message.info('取消了删除')
       }
       const res = await deleteGoods(data.goods_id)
-      console.log(res)
       if (res.meta.status !== 200) {
         this.$message.error('删除商品失败')
       }

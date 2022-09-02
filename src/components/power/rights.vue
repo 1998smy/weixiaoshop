@@ -47,7 +47,6 @@ export default {
     // 请求所有权限数据
     async getAllRights() {
       const res = await getRightsList('list')
-      console.log(res)
       this.rightsData = res.data
     }
   }

@@ -24,3 +24,12 @@ export function deleteGoods(id) {
     method: 'delete'
   })
 }
+
+// 编辑提交商品
+export function editGoods(id, data) {
+  return request({
+    url: 'goods/' + id,
+    method: 'put',
+    data
+  })
+}
