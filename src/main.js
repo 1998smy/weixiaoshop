@@ -17,9 +17,8 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
+
 Vue.config.productionTip = false
-// axios.prototype.$axios = axios
-// axios.defaults.baseURL = '/api'
 Vue.config.productionTip = false
 
 // 树形表格
@@ -27,7 +26,7 @@ Vue.component('tree-table', TreeTable)
 
 Vue.use(VueQuillEditor)
 
-// 全局过滤器
+// 全局时间过滤器
 Vue.filter('dateFormat', function (originVal) {
   const dt = new Date(originVal)
   const y = dt.getFullYear()

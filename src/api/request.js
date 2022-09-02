@@ -1,4 +1,7 @@
 import axios from "axios";
+// 导入 nprogress 进度条
+import nProgress from "nprogress";
+import 'nprogress/nprogress.css'
 export function request(config) {
 
   const instance = axios.create({
@@ -10,9 +13,9 @@ export function request(config) {
 
   // axios的拦截器(类似python的中间件的request)
   instance.interceptors.request.use(config => {
-    // console.log(config);
     config.headers.Authorization = window.sessionStorage.getItem('token')
     // 多用于登录时的cookies判断
+    nProgress.start()
     return config
   }, err => {
     console.log(err);
@@ -20,6 +23,7 @@ export function request(config) {
   // 数据返回拦截
   instance.interceptors.response.use(aaa => {
     // 多用于登录时的cookies判断
+    nProgress.done()
     return aaa.data
   }, err => {
     console.log(err);
@@ -29,9 +33,3 @@ export function request(config) {
 
 }
 
-// axios.defaults.withCredentials = true
-// const request = axios.create({
-//   baseURL: 'http://127.0.0.1:8888/api/private/v1/'
-// })
-
-// export default request
