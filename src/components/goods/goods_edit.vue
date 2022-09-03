@@ -7,6 +7,9 @@
       <el-breadcrumb-item>商品编辑</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="content-card">
+      <!-- 返回箭头 -->
+      <el-page-header @back="goBack" content="">
+      </el-page-header>
       <!-- 警告条 -->
       <el-alert title="编辑商品信息" type="info" center show-icon>
       </el-alert>
@@ -57,6 +60,7 @@
           <el-tab-pane label="商品图片" name="3">
             <el-upload class="upload-demo" :action="uploadUrl" :on-preview="handlePreview" :file-list="editGoodsForm.pics" :on-remove="handleRemove" :on-success="handleSuccess" list-type="picture" :headers="headersObj">
               <el-button size="small" type="primary">点击上传</el-button>
+              {{ editGoodsForm.pics}}
             </el-upload>
           </el-tab-pane>
           <el-tab-pane label="商品内容" name="4">
@@ -127,6 +131,7 @@ export default {
         return { url: item.pics_sma_url }
       })
       this.editGoodsForm = res.data
+      console.log(res)
     },
     // 获取所有商品分类列表
     async getCateList() {
@@ -179,14 +184,17 @@ export default {
       this.picVisible = true
     },
     // 处理移出图片的操作
-    handleRemove(file) {
+    handleRemove(file, fileList) {
+      console.log('file', file)
+      console.log('fileList', fileList)
       const detPicsInfo = file.response.data.tmp_path
       const i = this.editGoodsForm.pics.findIndex(x => x.pic === detPicsInfo)
       this.editGoodsForm.pics.splice(i, 1)
     },
     // 图片上传成功的函数
     handleSuccess(response) {
-      const picInfo = { pic: response.data.tmp_path }
+      console.log(response)
+      const picInfo = { url: response.data.url, name: response.data.tmp_path }
       this.editGoodsForm.pics.push(picInfo)
     },
     // 确认 提交编辑商品

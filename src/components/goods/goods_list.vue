@@ -100,6 +100,7 @@ export default {
       if (res.meta.status !== 200) {
         this.$message.error('删除商品失败')
       }
+      this.$message.success('删除商品成功')
       this.getAllGoods()
     },
     // 监听页面数量变化事件

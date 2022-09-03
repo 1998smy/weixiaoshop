@@ -164,6 +164,7 @@ export default {
         const ordersAdd = (this.editAddForm.address1 + this.editAddForm.address2).split(',').join('')
         this.editAddForm.consignee_addr = ordersAdd
         this.queryInfo.consignee_addr = ordersAdd
+        this.$message.success('修改地址成功')
         this.editAddVisible = false
         this.getOrdersList()
       })

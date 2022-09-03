@@ -40,7 +40,7 @@
         <el-form-item label="分类名称" prop="cat_name">
           <el-input v-model="addCateForm.cat_name"></el-input>
         </el-form-item>
-        <el-form-item label="父级分类">
+        <el-form-item label="父级分类" prop="selectedKeys">
           <el-cascader v-model="selectedKeys" :options="parentCateList" :props="cascaderProps" @change="parentCateChange" clearable></el-cascader>
         </el-form-item>
       </el-form>
@@ -181,6 +181,7 @@ export default {
       if (res.meta.status !== 201) {
         this.$message.error('添加分类失败')
       }
+      this.$message.success('添加分类成功')
       this.addCateDigVisible = false
       // 表单重置
       this.$refs.addCateForm.resetFields()
@@ -218,6 +219,7 @@ export default {
       if (res.meta.status !== 200) {
         this.$message.error('分类修改失败')
       }
+      this.$message.success('修改分类成功')
       this.getAllCateList()
       this.editCateDigVisible = false
     },
@@ -236,6 +238,7 @@ export default {
       if (res.meta.status !== 200) {
         this.$message.error('删除分类失败')
       }
+      this.$message.success('删除分类成功')
       this.getAllCateList()
     },
     // 页面展示数据 监听事件

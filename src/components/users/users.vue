@@ -56,7 +56,7 @@
       </el-form>
     </el-card>
     <!-- 添加用户对话框  一定要放在 页面最下方-->
-    <el-dialog title="添加用户" :close="addUsersClosed" :visible.sync="addUserFormVisible" width="30%">
+    <el-dialog title="添加用户" @close="addUsersClosed" :visible.sync="addUserFormVisible" width="30%">
       <el-form ref="addUserForm" :model="addUserForm" :rules="addRules" class="demo-ruleForm dialog-form" label-width="65px">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="addUserForm.username"></el-input>
@@ -218,10 +218,11 @@ export default {
         if (!vaild) return
         // 发起 添加用户请求
         const res = await addUser(this.addUserForm)
-        if (res.meta.status !== 200) {
+        if (res.meta.status !== 201) {
           this.$message.error('添加用户失败')
         }
         this.addUserFormVisible = false
+        this.$message.success('添加用户成功')
         // 重新调用 获取用户列表数据
         this.getUsersList()
       })
@@ -261,9 +262,10 @@ export default {
         // 发起 修改用户请求
         const res = await editUserInfo(this.editUserForm.id, this.editUserForm.email, this.editUserForm.phone)
         if (res.meta.status !== 200) {
-          this.$message.error('添加用户失败')
+          this.$message.error('用户修改失败')
         }
         this.editUserVisible = false
+        this.$message.success('用户修改成功')
         this.getUsersList()
       })
     },
@@ -304,6 +306,7 @@ export default {
         this.$message.error('设置角色失败')
       }
       this.setRoleVisible = false
+      this.$message.success('设置角色成功')
       // 重新获取列表
       this.getUsersList()
     },

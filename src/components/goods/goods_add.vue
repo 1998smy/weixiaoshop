@@ -7,6 +7,9 @@
       <el-breadcrumb-item>商品添加</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="content-card">
+      <!-- 返回箭头 -->
+      <el-page-header @back="goBack" content="">
+      </el-page-header>
       <!-- 警告条 -->
       <el-alert title="添加商品信息" type="info" center show-icon>
       </el-alert>
@@ -140,6 +143,10 @@ export default {
       }
       this.goodsCateList = res.data
     },
+    // 返回事件
+    goBack() {
+      this.$router.push('/home/goods')
+    },
     // 级联选择器中选择改变 触发事件
     selectedChange() {
       // 只能选择三级，不能选择一级和二级
@@ -227,7 +234,7 @@ export default {
           this.$message.error('商品添加失败')
         }
         this.$message.success('商品添加成功')
-        this.$router.push('/goods')
+        this.$router.push('/home/goods')
       })
     }
   },

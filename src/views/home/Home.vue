@@ -76,11 +76,20 @@ export default {
   },
   methods: {
     // 退出事件
-    loginOut() {
+    async loginOut() {
+      const deleteRes = await this.$confirm('是否退出首页, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(err => err)
+      if (deleteRes !== 'confirm') {
+        return this.$message.info('取消了删除')
+      }
+
       window.sessionStorage.removeItem('token')
       window.sessionStorage.removeItem('username')
-      this.$router.push('/login')
       this.$message.success('退出成功')
+      this.$router.push('/login')
     },
     // 获取左侧菜单栏
     async getMenuList() {

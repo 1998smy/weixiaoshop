@@ -21,7 +21,6 @@
                 <el-tag closable @close="deleteRolesTags(scope.row,item.id)" class="rolesTag">{{ item.authName }}</el-tag>
                 <i class="el-icon-caret-right"></i>
               </el-col>
-              <!-- 二级和三级 -->
               <el-col :span="19">
                 <!-- 二级 -->
                 <el-row v-for="(item2,i2) in item.children" :key="item2.id" :class="['vcenter', i2 === 0 ? '' :'bdtop']">
@@ -54,12 +53,12 @@
       </el-table>
     </el-card>
     <!-- 添加角色 对话框 -->
-    <el-dialog title="添加角色" :visible.sync="addRoleDigVisible" width="30%">
+    <el-dialog title="添加角色" :visible.sync="addRoleDigVisible" @close="addRoleClosed" width="30%">
       <el-form ref="addRoleForm" :rules="addRoleRules" :model="addRoleForm" label-width="80px">
         <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="addRoleForm.roleName"></el-input>
         </el-form-item>
-        <el-form-item label="角色描述">
+        <el-form-item label="角色描述" prop="roleDesc">
           <el-input v-model="addRoleForm.roleDesc"></el-input>
         </el-form-item>
       </el-form>
@@ -87,7 +86,7 @@
     <el-dialog title="提示" @close="clearKeysData" :visible.sync="rightsDialogVisible" width="30%">
       <el-tree :data="rightsList" :props="defaultProps" :default-checked-keys="rightsKeys" ref="rigTree" show-checkbox node-key="id" default-expand-all></el-tree>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="rightsDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="confRights">确 定</el-button>
       </span>
     </el-dialog>
@@ -149,6 +148,11 @@ export default {
       const res = await getRolesList()
       this.rolesData = res.data
     },
+    // 添加角色 表单重置事件
+    addRoleClosed() {
+      this.$refs.addRoleForm.resetFields()
+      // this.addRoleForm = this.$options()
+    },
     // 添加用户 确定按钮事件（请求添加角色）
     async cofAddInfo() {
       // 请求 添加用户信息
@@ -157,6 +161,7 @@ export default {
         this.$message.error('添加角色失败')
       }
       this.addRoleDigVisible = false
+      this.$message.success('添加角色成功')
       // 重新获取角色列表
       this.getALlRoles()
     },
@@ -175,6 +180,7 @@ export default {
         this.$message.error('修改角色失败')
       }
       this.editRoleDigVisible = false
+      this.$message.success('修改角色成功')
       this.getALlRoles()
     },
     // 删除角色
@@ -192,6 +198,7 @@ export default {
       if (res.meta.status !== 200) {
         this.$message.error('删除角色失败')
       }
+      this.$message.success('删除角色成功')
       this.getALlRoles()
     },
     // 删除角色指定权限
@@ -207,8 +214,9 @@ export default {
       // 请求删除指定权限
       const res = await deleteRoleRight(role.id, rightId)
       if (res.meta.status !== 200) {
-        this.$message.srror('权限取消失败')
+        this.$message.error('权限取消失败')
       }
+      this.$message.success('权限取消成功')
 
       // 如果二级权限下没有三级权限，则不展示该二级权限
       role.children = res.data
@@ -254,6 +262,8 @@ export default {
         this.$message.error('权限更新失败')
       }
       this.rightsDialogVisible = false
+      this.$message.success('权限更新成功')
+
       // 重新获取角色列表
       this.getALlRoles()
     }
